@@ -95,8 +95,10 @@ Request Body
   "body": "",
   "timeoutMs": 5000
 }
+```
 
 Response
+```json
 {
   "traceId": "7b9f3e0c-1a2b-4c3d-9e8f-123456789abc",
   "status": 200,
@@ -113,6 +115,8 @@ Error Response (표준)
   "message": "url 은 http 또는 https 만 허용됩니다.",
   "timestamp": "2026-01-05T15:00:00+09:00"
 }
+```
+
 로컬 실행
 요구사항
 
