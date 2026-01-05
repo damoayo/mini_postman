@@ -108,7 +108,9 @@ Response
   "body": "{\"ok\":true}",
   "elapsedMs": 132
 }
+```
 Error Response (표준)
+```json
 {
   "traceId": "7b9f3e0c-1a2b-4c3d-9e8f-123456789abc",
   "errorCode": "INVALID_REQUEST",
