@@ -1,4 +1,4 @@
-# Mini Postman Clone 개발 계획서 최종본
+# Mini Postman Clone 개발 계획서
 
 ## 1. 프로젝트 개요
 
@@ -95,7 +95,7 @@ MVP 목표는 **엔드투엔드 동작** 이다.
 
 ### 5.1 SSRF 방지 정책(강화 로드맵 포함)
 
-#### MVP 차단 기준(Phase 0)
+#### A. MVP 차단 기준
 - URL 스킴: http, https 만 허용
 - IP 직접 입력 또는 DNS 리졸브 결과가 다음에 해당하면 차단
   - loopback, private network, link-local
@@ -104,7 +104,7 @@ MVP 목표는 **엔드투엔드 동작** 이다.
 - 포트 제한: 기본 80, 443 만 허용(또는 지정 allowlist)
 - Host 헤더는 클라이언트가 임의로 바꾸지 못하게 서버가 통제
 
-#### 강화 기준(Phase 1)
+#### B. 강화 기준
 - 리다이렉트(3xx) 허용 시 최종 목적지에 대해 재검증
 - DNS Rebinding 대응
   - 최초 리졸브 결과와 실제 연결 대상이 바뀌는 패턴 탐지
@@ -197,10 +197,10 @@ MVP 목표는 **엔드투엔드 동작** 이다.
 - 요청 편집 상태와 응답 상태가 명확히 분리
 - 실행 중 로딩, 실패 메시지, 응답 렌더링까지 끊김 없이 동작
 
-### Zustand 상태(요약)
+### Zustand 상태
 - RequestStore: method, url, queryParams, headers, body, timeout
 - ResponseStore: currentResponse, isLoading, error, executionTime
-- HistoryStore: Phase 2 이후 도입
+- HistoryStore: 2단계 이후 도입
 
 ### UI 구성(최소)
 - Sidebar(옵션, MVP 에서는 없어도 됨)
@@ -239,10 +239,10 @@ MVP 목표는 **엔드투엔드 동작** 이다.
   - DNS 리졸브 기반 차단 고도화
   - 리다이렉트 최종 목적지 재검증
   - IPv6 로컬 범위 보강
-- WebClient 설정 고도화(풀, 타임아웃, max-in-memory-size)
-- 응답 처리 고도화
+  - WebClient 설정 고도화(풀, 타임아웃, max-in-memory-size)
+  - 응답 처리 고도화
   - 제한 초과 시 즉시 중단, 성능 좋은 누적 방식으로 정리
-- 요청 및 응답 헤더 필터링 강화
+  - 요청 및 응답 헤더 필터링 강화
 
 #### 완료 기준 체크리스트
 - 리다이렉트로 내부망 우회 시도도 차단된다
@@ -257,7 +257,7 @@ MVP 목표는 **엔드투엔드 동작** 이다.
 - JPA 엔티티 및 저장
   - History 저장
   - Request 저장(이름, URL, 메서드, 헤더, 바디)
-- History 조회 API
+  - History 조회 API
   - 기간, 상태코드, URL 키워드 필터
 
 #### 완료 기준 체크리스트
