@@ -40,10 +40,10 @@
 
 ```mermaid
 graph LR
-    Client[Client UI (Next.js)] --> ProxyServer[ProxyServer Server (Spring Boot)]
+    Client[Client UI (Next.js)] --> ProxyServer[ProxyServer (Spring Boot)]
     ProxyServer --> Target[Target API (External)]
 
-    subgraph PolicyGroup Policies
+    subgraph PolicyGroup [Proxy_Policies]
     P1[SSRF 방지]
     P2[헤더 필터링]
     P3[타임아웃 제어]
