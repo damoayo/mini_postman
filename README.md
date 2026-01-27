@@ -40,22 +40,16 @@
 
 ```mermaid
 graph LR
-    %% 1. 메인 흐름
-    Client[Client UI (Next.js)] --> ProxyServer[Proxy Server (Spring Boot)]
+    Client[Client UI (Next.js)] --> ProxyServer[ProxyServer Server (Spring Boot)]
     ProxyServer --> Target[Target API (External)]
 
-    %% 2. 정책 그룹 (ID를 'PolicyGroup'으로 변경하여 충돌 방지)
-    subgraph PolicyGroup [Proxy Policies]
-        direction TB
-        P1[SSRF 방지]
-        P2[헤더 필터링]
-        P3[타임아웃 제어]
-        P4[크기 제한]
-        P5[로깅/TraceID]
+    subgraph ProxyServer Policies
+    P1[SSRF 방지]
+    P2[헤더 필터링]
+    P3[타임아웃 제어]
+    P4[크기 제한]
+    P5[로깅/TraceID]
     end
-    
-    %% (선택사항) 박스와 서버를 점선으로 연결하고 싶다면 아래 주석 제거
-    %% PolicyGroup -.-> ProxyServer
 ```
 
 ---
