@@ -38,7 +38,7 @@
 
 ## 3. 시스템 아키텍처
 
-```mermaid
+```
 graph LR
     Client[Client UI (Next.js)] --> Proxy[Proxy_Server (Spring Boot)]
     Proxy --> Target[Target API (External)]
