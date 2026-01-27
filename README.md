@@ -38,12 +38,12 @@
 
 ## 3. 시스템 아키텍처
 
-```mermaid
+```
 graph LR
-    Client[Client UI (Next.js)] --> ProxyServer[ProxyServer (Spring Boot)]
-    ProxyServer --> Target[Target API (External)]
-
-    subgraph PolicyGroup [Proxy_Policies]
+    Client[Client UI (Next.js)] --> Proxy[Proxy_Server (Spring Boot)]
+    Proxy --> Target[Target API (External)]
+    
+    subgraph ProxyGroup Policies
     P1[SSRF 방지]
     P2[헤더 필터링]
     P3[타임아웃 제어]
