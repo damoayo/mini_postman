@@ -17,6 +17,7 @@ public class UserResponse {
 	private LocalDateTime createdAt;
 
 	public static UserResponse from(User user) {
-		return UserResponse.builder().id(user.getId()).name(user.getName()).email(user.getEmail()).build();
+		return UserResponse.builder().id(user.getId()).name(user.getName()).email(user.getEmail())
+				.createdAt(user.getCreatedAt()).build();
 	}
 }
