@@ -15,7 +15,6 @@ import com.minipostman.tarae.dto.response.ErrorResponse;
 @RestControllerAdvice // 이 어노테이션은 Spring MVC에서 발생하는 예외를 전역적으로 처리하기 위한 클래스임을 나타냅니다. 모든 컨트롤러에서 발생하는 예외를
 						// 이 클래스에서 처리할 수 있도록 합니다.
 public class GlobalExceptionHandler {
-
 	// 이 클래스에서는 다양한 예외 상황에 대한 핸들러 메서드를 정의할 수 있습니다. 예를 들어, 특정 예외가 발생했을 때 적절한 HTTP 상태
 	// 코드와 메시지를 반환하도록 설정할 수 있습니다.
 
