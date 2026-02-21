@@ -28,11 +28,11 @@ public class Post extends BaseEntity {
 	@Column(nullable = false, length = 200)
 	private String title;
 
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@ManyToOne(fetch = FetchType.LAZY) // 지연 로딩으로 설정하여 필요할 때만 User 엔티티를 로드
+	@JoinColumn(name = "user_id") // 외래 키 컬럼 이름 지정
 	private User author;
 
 	@Builder
