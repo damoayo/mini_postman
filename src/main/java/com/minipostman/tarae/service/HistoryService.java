@@ -32,6 +32,7 @@ public class HistoryService {
 	}
 
 	// 히스토리 저장
+	@Transactional
 	public HistoryResponse save(HistorySaveRequest request) {
 		History history = History.builder().method(request.getMethod()).url(request.getUrl())
 				.headers(request.getHeaders()).requestBody(request.getRequestBody())
@@ -40,6 +41,7 @@ public class HistoryService {
 	}
 
 	// 히스토리 삭제
+	@Transactional
 	public void deleteById(Long id) {
 		if (!historyRepository.existsById(id)) {
 			throw new IllegalArgumentException("히스토리를 찾을 수 없습니다: " + id);
