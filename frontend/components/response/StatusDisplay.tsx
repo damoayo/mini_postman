@@ -10,25 +10,30 @@ function getStatusColor(status: number): string {
   return 'bg-gray-100 text-gray-800';
 }
 
+function getStatusText(status: number): string {
+  const statusTexts: Record<number, string> = {
+    200: 'OK',
+    201: 'Created',
+    204: 'No Content',
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    404: 'Not Found',
+    500: 'Internal Server Error',
+  };
+  return statusTexts[status] || 'Unknown';
+}
+
 export default function StatusDisplay({ status, executionTime }: StatusDisplayProps) {
   return (
-    // <div className={`inline-flex items-center px-3 py-1 rounded ${getStatusColor(status)}`}>
-    //   <span className="font-bold">Status: {status}</span>
-    //   <span className="ml-2 text-sm text-gray-600">{executionTime} ms</span>
-    // </div>
-
     <div className="flex items-center gap-4 mb-4">
-    
       {/* 상태 코드 표시 */}
       <span className={`px-3 py-1 rounded-full font-bold ${getStatusColor(status)}`}>
-        Status: {status}
+        Status: {status} {getStatusText(status)}
       </span>
-    
       {/* 응답 시간 표시 */}
       <span className="text-gray-500">
         Time: {executionTime}ms
       </span>
-    
     </div>
   );
 }
