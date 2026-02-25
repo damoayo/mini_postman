@@ -34,6 +34,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.mockito:mockito-core:5.x.x'
+    // 에이전트 설정을 위해 아래 라인 추가 (버전은 프로젝트에 맞게)
+    testImplementation 'org.mockito:mockito-subclass:5.x.x'
 }
 
 tasks.named('test') {
