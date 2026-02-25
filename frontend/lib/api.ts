@@ -3,6 +3,20 @@ import { ApiRequest, ApiResponse } from '@/types';
 // Backend API 기본 URL
 const API_BASE_URL = 'http://localhost:8080/api';
 
+export interface ApiRequest {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  url: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+export interface ApiResponse {
+  status: number;
+  headers: Record<string, string>;
+  body: string;
+  executionTime: number;
+}
+
 // API 요청 실행 함수
 export async function executeRequest(request: ApiRequest): Promise<ApiResponse> {
   // 1. 시작 시간 기록
