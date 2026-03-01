@@ -21,11 +21,10 @@ export default function Home() {
 
   const handleSend = async () => {
     setLoading(true);
-    setError(null);       // 이전 에러 초기화
-    setResponse(null);    // ← 이전 응답 초기화
+    setError(null);
+    setResponse(null);
   
     try {
-      // ★ api.ts의 executeRequest 활용 (이전: 직접 fetch 호출)
       const result = await executeRequest({
         method,
         url,
@@ -45,22 +44,12 @@ export default function Home() {
     }
   };
 
-  /**
-   * 응답 본문을 안전하게 포맷팅하는 함수
-   *
-   * 학습 포인트:
-   * - try-catch로 JSON.parse 실패를 대비
-   * - JSON이면 예쁘게 들여쓰기(pretty print)
-   * - JSON이 아니면 원본 텍스트 그대로 표시
-   */
   function formatResponseBody(body: string): string {
     if (!body) return '(Empty)';
-    
     try {
       const parsed = JSON.parse(body);
       return JSON.stringify(parsed, null, 2);
     } catch {
-      // JSON이 아닌 경우 (HTML, 일반 텍스트 등)
       return body;
     }
   }
@@ -68,7 +57,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* 헤더 */}
-      <div className="bg-linear-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
+      <div className="bg-gradient-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <span>🚀</span>
           Mini Postman
@@ -78,20 +67,17 @@ export default function Home() {
       <div className="max-w-7xl mx-auto p-6 space-y-4">
         {/* Request 영역 */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          {/* Method + URL + Send */}
           <div className="p-6">
             <div className="flex gap-3">
-              {/* Method Selector */}
+              {/* ✅ 컴포넌트 활용 */}
               <MethodSelector method={method} onChange={setMethod} />
-
-              {/* URL Input */}
               <UrlInput value={url} onChange={setUrl} />
 
               {/* Send Button */}
               <button
                 onClick={handleSend}
                 disabled={loading}
-                className="bg-linear-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
+                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -105,14 +91,9 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Body (POST, PUT일 때만) */}
+            {/* ✅ BodyEditor 컴포넌트 활용 (POST, PUT일 때만) */}
             {(method === 'POST' || method === 'PUT') && (
-              <div className="mt-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Request Body
-                </label>
-                <BodyEditor value={requestBody} onChange={setRequestBody} />
-              </div>
+              <BodyEditor value={requestBody} onChange={setRequestBody} />
             )}
           </div>
         </div>
@@ -170,7 +151,7 @@ export default function Home() {
                   <div className="space-y-2">
                     {Object.entries(response.headers).map(([key, value]) => (
                       <div key={key} className="flex gap-4 text-sm">
-                        <span className="font-bold text-gray-700 min-w-50">{key}:</span>
+                        <span className="font-bold text-gray-700 min-w-[200px]">{key}:</span>
                         <span className="text-gray-600 flex-1 break-all">{value}</span>
                       </div>
                     ))}
