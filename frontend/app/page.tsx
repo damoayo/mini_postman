@@ -1,9 +1,21 @@
 'use client';
 
-import BodyEditor from '@/components/request/BodyEditor';
-import MethodSelector from '@/components/request/MethodSelector';
-import UrlInput from '@/components/request/UrlInput';
-import StatusDisplay from '@/components/response/StatusDisplay';
+/**
+ * page.tsx — 메인 페이지 (오케스트레이터)
+ *
+ * 학습 포인트:
+ * 1. 이 파일은 "상태 관리"와 "API 호출"만 담당
+ *    - UI 렌더링 세부사항은 모두 하위 컴포넌트에게 위임
+ * 2. Lifting State Up — 여러 컴포넌트가 공유하는 state는 가장 가까운 공통 조상에서 관리
+ *    - method, url, body, headers → RequestPanel과 handleSend 모두 사용
+ *    - response → ResponsePanel에서 사용
+ * 3. 레이아웃 — Postman처럼 좌측 히스토리 사이드바 + 우측 메인 영역
+ */
+
+import { HistoryItem } from '@/components/history/HistoryList';
+import HistoryPanel from '@/components/history/HistoryPanel';
+import RequestPanel from '@/components/request/RequestPanel';
+import ResponsePanel from '@/components/response/ResponsePanel';
 import { executeRequest } from '@/lib/api';
 import { ApiResponse } from '@/types';
 import { useState } from 'react';
@@ -11,26 +23,39 @@ import { useState } from 'react';
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export default function Home() {
+  // ── 요청 관련 state ──
   const [method, setMethod] = useState<HttpMethod>('GET');
   const [url, setUrl] = useState('http://localhost:8080/api/users');
   const [requestBody, setRequestBody] = useState('');
+  const [requestHeaders, setRequestHeaders] = useState<Record<string, string>>({});
+
+  // ── 응답 관련 state ──
   const [response, setResponse] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'body' | 'headers'>('body');
   const [error, setError] = useState<string | null>(null);
 
+  // ── 히스토리 새로고침 트리거 ──
+  const [historyRefresh, setHistoryRefresh] = useState(0);
+
+  /**
+   * API 요청 실행
+   * - 요청 성공 시 히스토리 새로고침 트리거를 +1 하여 HistoryPanel이 자동 갱신되도록 함
+   */
   const handleSend = async () => {
     setLoading(true);
     setError(null);
     setResponse(null);
-  
+
     try {
       const result = await executeRequest({
         method,
         url,
+        headers: Object.keys(requestHeaders).length > 0 ? requestHeaders : undefined,
         body: requestBody || undefined,
       });
       setResponse(result);
+      // 히스토리 새로고침 트리거
+      setHistoryRefresh((prev) => prev + 1);
     } catch (err) {
       if (err instanceof TypeError && err.message === 'Failed to fetch') {
         setError('서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
@@ -44,149 +69,92 @@ export default function Home() {
     }
   };
 
-  function formatResponseBody(body: string): string {
-    if (!body) return '(Empty)';
-    try {
-      const parsed = JSON.parse(body);
-      return JSON.stringify(parsed, null, 2);
-    } catch {
-      return body;
-    }
-  }
+  /**
+   * 히스토리 항목을 클릭하면 해당 요청 정보를 폼에 복원
+   */
+  const handleHistorySelect = (item: HistoryItem) => {
+    setMethod(item.method as HttpMethod);
+    setUrl(item.url);
+    // 선택 시 이전 응답은 초기화
+    setResponse(null);
+    setError(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* 헤더 */}
-      <div className="bg-gradient-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
+      {/* ── 헤더 ── */}
+      <div className="bg-linear-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <span>🚀</span>
           Mini Postman
         </h1>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6 space-y-4">
-        {/* Request 영역 */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6">
-            <div className="flex gap-3">
-              {/* ✅ 컴포넌트 활용 */}
-              <MethodSelector method={method} onChange={setMethod} />
-              <UrlInput value={url} onChange={setUrl} />
+      {/* ── 메인 레이아웃 (사이드바 + 콘텐츠) ── */}
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex gap-6">
+          {/* 좌측: 히스토리 사이드바 */}
+          <div className="w-72 shrink-0">
+            <HistoryPanel
+              onSelect={handleHistorySelect}
+              refreshTrigger={historyRefresh}
+            />
+          </div>
 
-              {/* Send Button */}
-              <button
-                onClick={handleSend}
-                disabled={loading}
-                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                    </svg>
-                    Sending...
-                  </span>
-                ) : 'Send'}
-              </button>
-            </div>
+          {/* 우측: 메인 영역 */}
+          <div className="flex-1 space-y-4">
+            {/* 요청 패널 */}
+            <RequestPanel
+              method={method}
+              url={url}
+              body={requestBody}
+              headers={requestHeaders}
+              loading={loading}
+              onMethodChange={setMethod}
+              onUrlChange={setUrl}
+              onBodyChange={setRequestBody}
+              onHeadersChange={setRequestHeaders}
+              onSend={handleSend}
+            />
 
-            {/* ✅ BodyEditor 컴포넌트 활용 (POST, PUT일 때만) */}
-            {(method === 'POST' || method === 'PUT') && (
-              <BodyEditor value={requestBody} onChange={setRequestBody} />
+            {/* 응답 패널 */}
+            {response && (
+              <ResponsePanel
+                status={response.status}
+                statusText={response.statusText}
+                headers={response.headers}
+                body={response.body}
+                executionTime={response.executionTime}
+              />
+            )}
+
+            {/* Empty State */}
+            {!response && !loading && !error && (
+              <div className="bg-white rounded-xl shadow-md p-12 text-center">
+                <div className="text-gray-400 text-6xl mb-4">📡</div>
+                <p className="text-gray-500 text-lg">
+                  Enter a URL and click Send to get a response
+                </p>
+              </div>
+            )}
+
+            {/* Error 표시 */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-red-500 text-xl">⚠️</span>
+                  <span className="text-red-700">{error}</span>
+                </div>
+                <button
+                  onClick={() => setError(null)}
+                  className="text-red-400 hover:text-red-600 font-bold"
+                >
+                  ✕
+                </button>
+              </div>
             )}
           </div>
         </div>
-
-        {/* Response 영역 */}
-        {response && (
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">Response</h2>
-                <StatusDisplay 
-                  status={response.status} 
-                  executionTime={response.executionTime} 
-                />
-              </div>
-
-              {/* Tabs */}
-              <div className="border-b border-gray-200 mb-4">
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setActiveTab('body')}
-                    className={`pb-2 px-1 font-semibold transition-colors ${
-                      activeTab === 'body'
-                        ? 'text-orange-600 border-b-2 border-orange-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Body
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('headers')}
-                    className={`pb-2 px-1 font-semibold transition-colors ${
-                      activeTab === 'headers'
-                        ? 'text-orange-600 border-b-2 border-orange-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Headers ({Object.keys(response.headers).length})
-                  </button>
-                </div>
-              </div>
-
-              {/* Body Tab */}
-              {activeTab === 'body' && (
-                <div className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-96">
-                  <pre className="text-green-400 text-sm font-mono whitespace-pre-wrap">
-                    {formatResponseBody(response.body)}
-                  </pre>
-                </div>
-              )}
-
-              {/* Headers Tab */}
-              {activeTab === 'headers' && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="space-y-2">
-                    {Object.entries(response.headers).map(([key, value]) => (
-                      <div key={key} className="flex gap-4 text-sm">
-                        <span className="font-bold text-gray-700 min-w-[200px]">{key}:</span>
-                        <span className="text-gray-600 flex-1 break-all">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!response && !loading && (
-          <div className="bg-white rounded-xl shadow-md p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">📡</div>
-            <p className="text-gray-500 text-lg">
-              Enter a URL and click Send to get a response
-            </p>
-          </div>
-        )}
-
-        {/* Error 표시 */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-red-500 text-xl">⚠️</span>
-              <span className="text-red-700">{error}</span>
-            </div>
-            <button 
-              onClick={() => setError(null)}
-              className="text-red-400 hover:text-red-600 font-bold"
-            >
-              ✕
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
