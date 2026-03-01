@@ -25,7 +25,7 @@ export default function Home() {
 
   const handleSend = async () => {
     setLoading(true);
-    setError(null);       // ��� 이전 에러 초기화
+    setError(null);       // 이전 에러 초기화
     setResponse(null);    // ← 이전 응답 초기화
   
     try {
