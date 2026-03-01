@@ -1,5 +1,8 @@
 package com.minipostman.tarae.domain;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.minipostman.tarae.domain.common.BaseEntity;
@@ -42,6 +45,10 @@ public class History extends BaseEntity {
 	private String responseBody; // 응답 본문 (성공/실패 여부 포함)
 
 	private Integer statusCode; // HTTP 상태 코드 (200, 404, 500 등)
+
+	@CreatedDate // 엔티티가 생성될 때 자동으로 현재 시간 저장
+	@Column(nullable = false)
+	private LocalDateTime executedAt; // 요청이 처리된 시간
 
 	@Builder
 	public History(String method, String url, String headers, String requestBody, String responseBody,

@@ -29,6 +29,7 @@ export default function Home() {
     setResponse(null);    // ← 이전 응답 초기화
   
     try {
+      // ★ api.ts의 executeRequest 활용 (이전: 직접 fetch 호출)
       const result = await executeRequest({
         method,
         url,
@@ -36,7 +37,6 @@ export default function Home() {
       });
       setResponse(result);
     } catch (err) {
-      // 사용자가 이해할 수 있는 에러 메시지 생성
       if (err instanceof TypeError && err.message === 'Failed to fetch') {
         setError('서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
       } else if (err instanceof Error) {
