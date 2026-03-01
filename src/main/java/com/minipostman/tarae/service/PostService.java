@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.minipostman.tarae.domain.Post;
 import com.minipostman.tarae.domain.User;
 import com.minipostman.tarae.dto.request.PostCreateRequest;
+import com.minipostman.tarae.dto.request.PostUpdateRequest;
 import com.minipostman.tarae.dto.response.PostResponse;
 import com.minipostman.tarae.repository.PostRepository;
 import com.minipostman.tarae.repository.UserRepository;
@@ -52,6 +53,21 @@ public class PostService {
 
 		Post savedPost = postRepository.save(post);
 		return PostResponse.from(savedPost);
+	}
+
+	/**
+	 * 게시글 수정
+	 *
+	 * 학습 포인트: - findById로 먼저 엔티티를 조회 → 없으면 예외 - 엔티티의 update 메서드 호출 → 더티 체킹으로 자동
+	 * UPDATE - @Transactional 범위 안에서만 더티 체킹이 동작합니다
+	 */
+	@Transactional
+	public PostResponse update(Long id, PostUpdateRequest request) {
+		Post post = postRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다: " + id));
+
+		post.update(request.getTitle(), request.getContent());
+		return PostResponse.from(post);
 	}
 
 	// 게시글 삭제
