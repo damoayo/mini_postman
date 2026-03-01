@@ -1,9 +1,8 @@
 package com.minipostman.tarae.domain;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.minipostman.tarae.domain.common.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "request_history")
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class History {
+public class History extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +43,6 @@ public class History {
 
 	private Integer statusCode; // HTTP 상태 코드 (200, 404, 500 등)
 
-	@CreatedDate // 엔티티가 생성될 때 자동으로 현재 시간 저장
-	@Column(nullable = false)
-	private LocalDateTime executedAt; // 요청이 처리된 시간
-
 	@Builder
 	public History(String method, String url, String headers, String requestBody, String responseBody,
 			Integer statusCode) {
@@ -57,5 +52,12 @@ public class History {
 		this.requestBody = requestBody;
 		this.responseBody = responseBody;
 		this.statusCode = statusCode;
+	}
+
+	/**
+	 * 기존 코드와의 호환성을 위한 편의 메서드 BaseEntity.createdAt을 executedAt으로 접근 가능
+	 */
+	public java.time.LocalDateTime getExecutedAt() {
+		return getCreatedAt();
 	}
 }
