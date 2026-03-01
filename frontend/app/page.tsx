@@ -1,18 +1,14 @@
 'use client';
 
+import BodyEditor from '@/components/request/BodyEditor';
+import MethodSelector from '@/components/request/MethodSelector';
+import UrlInput from '@/components/request/UrlInput';
 import StatusDisplay from '@/components/response/StatusDisplay';
 import { executeRequest } from '@/lib/api';
+import { ApiResponse } from '@/types';
 import { useState } from 'react';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-
-interface ApiResponse {
-  status: number;
-  statusText: string;
-  headers: Record<string, string>;
-  body: string;
-  executionTime: number;
-}
 
 export default function Home() {
   const [method, setMethod] = useState<HttpMethod>('GET');
@@ -86,30 +82,10 @@ export default function Home() {
           <div className="p-6">
             <div className="flex gap-3">
               {/* Method Selector */}
-              <select
-                value={method}
-                onChange={(e) => setMethod(e.target.value as HttpMethod)}
-                className={`border-2 rounded-lg px-4 py-3 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors ${
-                  method === 'GET' ? 'text-green-600 border-green-300 bg-green-50' :
-                  method === 'POST' ? 'text-yellow-600 border-yellow-300 bg-yellow-50' :
-                  method === 'PUT' ? 'text-blue-600 border-blue-300 bg-blue-50' :
-                  'text-red-600 border-red-300 bg-red-50'
-                }`}
-              >
-                <option value="GET">GET</option>
-                <option value="POST">POST</option>
-                <option value="PUT">PUT</option>
-                <option value="DELETE">DELETE</option>
-              </select>
+              <MethodSelector method={method} onChange={setMethod} />
 
               {/* URL Input */}
-              <input
-                type="text"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Enter request URL"
-                className="flex-1 border-2 text-gray-400 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-              />
+              <UrlInput value={url} onChange={setUrl} />
 
               {/* Send Button */}
               <button
@@ -135,12 +111,7 @@ export default function Home() {
                 <label className="block text-sm font-bold text-gray-700 mb-2">
                   Request Body
                 </label>
-                <textarea
-                  value={requestBody}
-                  onChange={(e) => setRequestBody(e.target.value)}
-                  placeholder='{"name": "홍길동", "email": "hong@test.com"}'
-                  className="w-full border-2 text-gray-500 border-gray-300 rounded-lg p-4 font-mono text-sm h-40 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-                />
+                <BodyEditor value={requestBody} onChange={setRequestBody} />
               </div>
             )}
           </div>
