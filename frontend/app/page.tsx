@@ -1,6 +1,7 @@
 'use client';
 
 import StatusDisplay from '@/components/response/StatusDisplay';
+import { executeRequest } from '@/lib/api';
 import { useState } from 'react';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -20,45 +21,53 @@ export default function Home() {
   const [response, setResponse] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'body' | 'headers'>('body');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSend = async () => {
     setLoading(true);
-    const startTime = Date.now();
-
+    setError(null);       // ��� 이전 에러 초기화
+    setResponse(null);    // ← 이전 응답 초기화
+  
     try {
-      const options: RequestInit = {
+      const result = await executeRequest({
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      if (method !== 'GET' && requestBody) {
-        options.body = requestBody;
+        url,
+        body: requestBody || undefined,
+      });
+      setResponse(result);
+    } catch (err) {
+      // 사용자가 이해할 수 있는 에러 메시지 생성
+      if (err instanceof TypeError && err.message === 'Failed to fetch') {
+        setError('서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
+      } else if (err instanceof Error) {
+        setError(`요청 실패: ${err.message}`);
+      } else {
+        setError('알 수 없는 오류가 발생했습니다.');
       }
-
-      const res = await fetch(url, options);
-      const executionTime = Date.now() - startTime;
-      const body = await res.text();
-
-      const headers: Record<string, string> = {};
-      res.headers.forEach((value, key) => {
-        headers[key] = value;
-      });
-
-      setResponse({
-        status: res.status,
-        statusText: res.statusText,
-        headers,
-        body,
-        executionTime,
-      });
-    } catch (error) {
-      console.error('Request failed:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  /**
+   * 응답 본문을 안전하게 포맷팅하는 함수
+   *
+   * 학습 포인트:
+   * - try-catch로 JSON.parse 실패를 대비
+   * - JSON이면 예쁘게 들여쓰기(pretty print)
+   * - JSON이 아니면 원본 텍스트 그대로 표시
+   */
+  function formatResponseBody(body: string): string {
+    if (!body) return '(Empty)';
+    
+    try {
+      const parsed = JSON.parse(body);
+      return JSON.stringify(parsed, null, 2);
+    } catch {
+      // JSON이 아닌 경우 (HTML, 일반 텍스트 등)
+      return body;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -178,11 +187,8 @@ export default function Home() {
               {/* Body Tab */}
               {activeTab === 'body' && (
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-96">
-                  <pre className="text-green-400 text-sm font-mono">
-                    {response.body ? 
-                      JSON.stringify(JSON.parse(response.body), null, 2) : 
-                      '(Empty)'
-                    }
+                  <pre className="text-green-400 text-sm font-mono whitespace-pre-wrap">
+                    {formatResponseBody(response.body)}
                   </pre>
                 </div>
               )}
@@ -211,6 +217,22 @@ export default function Home() {
             <p className="text-gray-500 text-lg">
               Enter a URL and click Send to get a response
             </p>
+          </div>
+        )}
+
+        {/* Error 표시 */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-red-500 text-xl">⚠️</span>
+              <span className="text-red-700">{error}</span>
+            </div>
+            <button 
+              onClick={() => setError(null)}
+              className="text-red-400 hover:text-red-600 font-bold"
+            >
+              ✕
+            </button>
           </div>
         )}
       </div>
