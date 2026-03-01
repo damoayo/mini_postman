@@ -42,4 +42,19 @@ public class Post extends BaseEntity {
 		this.author = author;
 	}
 
+	/**
+	 * 게시글 수정 — 작성자(author)는 변경 불가
+	 *
+	 * 학습 포인트: - 엔티티 설계 시 "무엇을 수정 가능하게 할 것인가"를 결정하는 것이 중요 - 작성자는 게시글의 핵심 속성이므로 변경
+	 * 불가로 설계
+	 */
+	public void update(String title, String content) {
+		if (title != null) {
+			this.title = title;
+		}
+		if (content != null) {
+			this.content = content;
+		}
+	}
+
 }
