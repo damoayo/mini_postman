@@ -68,7 +68,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* 헤더 */}
-      <div className="bg-gradient-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
+      <div className="bg-linear-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <span>🚀</span>
           Mini Postman
@@ -91,7 +91,7 @@ export default function Home() {
               <button
                 onClick={handleSend}
                 disabled={loading}
-                className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
+                className="bg-linear-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -170,7 +170,7 @@ export default function Home() {
                   <div className="space-y-2">
                     {Object.entries(response.headers).map(([key, value]) => (
                       <div key={key} className="flex gap-4 text-sm">
-                        <span className="font-bold text-gray-700 min-w-[200px]">{key}:</span>
+                        <span className="font-bold text-gray-700 min-w-50">{key}:</span>
                         <span className="text-gray-600 flex-1 break-all">{value}</span>
                       </div>
                     ))}
