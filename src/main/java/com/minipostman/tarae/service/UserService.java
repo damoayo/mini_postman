@@ -14,8 +14,9 @@ import com.minipostman.tarae.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor // final 필드에 대한 생성자 자동 생성
-@Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션 적용
+@RequiredArgsConstructor // 이 애노테이션을 안써서 생성자가 없으면 UserRepository를 주입할 수 없어서 NullPointerException이 발생할 수
+							// 있음
+@Transactional(readOnly = true) // @Transactional만 쓰면 모든 메서드가 트랜잭션이 걸리게 됨
 public class UserService {
 
 	private final UserRepository userRepository;

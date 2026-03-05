@@ -58,7 +58,7 @@ export default function RequestPanel({
           <button
             onClick={onSend}
             disabled={loading}
-            className="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
+            className="bg-linear-to-r from-orange-500 to-pink-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-400 shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:transform-none"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export default function RequestPanel({
             <BodyEditor value={body} onChange={onBodyChange} />
           )}
           {activeTab === 'headers' && (
-            <HeadersEditor headers={headers} onChange={onHeadersChange} />
+            <HeadersEditor headers={headers} onChange={onHeadersChange} method={method} />
           )}
         </div>
       </div>

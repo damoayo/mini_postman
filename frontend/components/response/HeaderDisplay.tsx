@@ -44,7 +44,7 @@ export default function HeadersDisplay({ headers }: HeadersDisplayProps) {
         <div className="space-y-2">
           {filtered.map(([key, value]) => (
             <div key={key} className="flex gap-4 text-sm">
-              <span className="font-bold text-gray-700 min-w-[200px]">{key}:</span>
+              <span className="font-bold text-gray-700 min-w-50">{key}:</span>
               <span className="text-gray-600 flex-1 break-all">{value}</span>
             </div>
           ))}

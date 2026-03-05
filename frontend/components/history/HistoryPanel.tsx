@@ -37,7 +37,7 @@ export default function HistoryPanel({ onSelect, refreshTrigger }: HistoryPanelP
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_BASE_URL}/api/history`);
+        const res = await fetch(`${API_BASE_URL}/api/histories`);
         if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
         const data: HistoryItem[] = await res.json();
         setItems(data);

@@ -42,6 +42,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
 
+		System.err.println("에러 발생: " + e.getMessage());
+
 		ErrorResponse error = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
 				.message("서버 오류가 발생했습니다").timestamp(LocalDateTime.now()).build();
 

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder // 이것의 역활은
 public class UserResponse {
 
 	private Long id;

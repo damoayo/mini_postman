@@ -41,12 +41,14 @@ export default function Home() {
    * API 요청 실행
    * - 요청 성공 시 히스토리 새로고침 트리거를 +1 하여 HistoryPanel이 자동 갱신되도록 함
    */
+  // handleSend는 RequestPanel의 onSend 콜백으로 전달되어, Send 버튼 클릭 시 호출됩니다.
   const handleSend = async () => {
     setLoading(true);
     setError(null);
     setResponse(null);
 
     try {
+      // executeRequest는 /lib/api.ts에 정의된 함수로, 실제 API 요청을 수행합니다.
       const result = await executeRequest({
         method,
         url,
@@ -54,6 +56,25 @@ export default function Home() {
         body: requestBody || undefined,
       });
       setResponse(result);
+
+      // ★ 히스토리 저장 (백엔드에 POST)
+      try {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/histories`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method,                                          // "GET", "POST" 등
+            url,                                             // 요청 URL
+            headers: JSON.stringify(requestHeaders),         // 헤더를 JSON 문자열로
+            requestBody: requestBody || null,                // 요청 본문
+            responseBody: result.body || null,                // 응답 본문
+            statusCode: result.status,                       // 200, 404 등
+          }),
+        });
+      } catch {
+        // 히스토리 저장 실패는 무시 (메인 기능에 영향 X)
+        console.error('히스토리 저장 실패');
+      }
       // 히스토리 새로고침 트리거
       setHistoryRefresh((prev) => prev + 1);
     } catch (err) {
