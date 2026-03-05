@@ -25,7 +25,7 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export default function Home() {
   // ── 요청 관련 state ──
   const [method, setMethod] = useState<HttpMethod>('GET');
-  const [url, setUrl] = useState('http://localhost:8080/api/users');
+  const [url, setUrl] = useState('https://mini-postman-api.onrender.com/api/users');
   const [requestBody, setRequestBody] = useState('');
   const [requestHeaders, setRequestHeaders] = useState<Record<string, string>>({});
 
