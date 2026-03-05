@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: mini-postman-backend
+  
+  # H2 Database 설정
+  h2:
+    console:
+      enabled: false   # 배포 환경에서는 H2 콘솔 비활성화 (보안)
+  
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  
+  # JPA 설정
+  jpa:
+    show-sql: false    # 배포 환경에서는 SQL 로그 끄기 (성능)
+
+server:
+  port: 8080
+
+debug: true
+
+# 로깅 설정
+logging:
+  level:
+    com.minipostman: INFO        # DEBUG → INFO로 변경 (로그 양 줄이기)
+    org.hibernate.SQL: WARN
