@@ -104,7 +104,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* ── 헤더 ── */}
-      <div className="bg-linear-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
+      <div className="flex justify-center bg-linear-to-r from-orange-500 to-pink-500 px-6 py-4 shadow-lg">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <span>🚀</span>
           Mini Postman

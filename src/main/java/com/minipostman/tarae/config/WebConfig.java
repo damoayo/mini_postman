@@ -9,10 +9,9 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/api/**").allowedOrigins("http://localhost:3000")
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH") // 허용할 HTTP 메서드
-				.allowedHeaders("*") // 모든 헤더 허용
-				.allowCredentials(true); // 자격 증명 허용 여부 (쿠키, 인증 정보 등)
+		registry.addMapping("/api/**").allowedOrigins("http://localhost:3000", // 로컬 개발용 (기존)
+				"https://*.vercel.app" // Vercel 배포용 (추가!)
+		).allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH").allowedHeaders("*").allowCredentials(false); // Vercel에서는
+																												// false로
 	}
-
 }
