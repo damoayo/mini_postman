@@ -183,26 +183,26 @@ mini-postman/
 | Container | Docker | 애플리케이션 컨테이너화 |
 | Orchestration | Docker Compose | 로컬 개발 환경 |
 | Version Control | Git | 소스 코드 관리 |
-| Deployment | Vercel (FE), Railway (BE) | 실제 배포 |
+| Deployment | Vercel (FE), Render (BE) | 실제 배포 |
 
 ---
 
 ## 4. Phase별 개발 계획
 
-### 전체 타임라인 (6-8주)
+### 전체 타임라인
 
 | Phase | 기간 | 목표 |
-|-------|------|------|
-| Phase 1 | 1주 | Backend 기초 - User CRUD |
-| Phase 2 | 1주 | Backend 확장 - Post CRUD, 예외처리 |
-| Phase 3 | 1주 | Backend 완성 - History API |
-| Phase 4 | 1주 | Frontend 기초 - UI 구현 |
-| Phase 5 | 1주 | Frontend 고도화 - History 기능 |
-| Phase 6 | 1-2주 | 통합 및 배포 |
+|-------|------|
+| Phase 1 | Backend 기초 - User CRUD |
+| Phase 2 | Backend 확장 - Post CRUD, 예외처리 |
+| Phase 3 | Backend 완성 - History API |
+| Phase 4 | Frontend 기초 - UI 구현 |
+| Phase 5 | Frontend 고도화 - History 기능 |
+| Phase 6 | 통합 및 배포 |
 
 ---
 
-### Phase 1: Backend 기초 (1주차)
+### Phase 1: Backend 기초
 
 **목표: Spring Boot 프로젝트 생성 및 첫 번째 REST API 만들기**
 
@@ -235,7 +235,7 @@ File → Import → Existing Gradle Project
 → 압축 푼 폴더 선택
 ```
 
-#### 1.2 Lombok 설치 (필수)
+#### 1.2 Lombok 설치
 
 ```bash
 # 1. lombok.jar 다운로드
@@ -569,18 +569,9 @@ curl http://localhost:8080/api/users/1
 curl -X DELETE http://localhost:8080/api/users/1
 ```
 
-#### ✅ 학습 체크포인트
-
-- [ ] `@RestController`와 `@Controller`의 차이 이해
-- [ ] `@RequestBody`로 JSON 데이터 받기
-- [ ] `@PathVariable`로 URL 경로 변수 받기
-- [ ] JPA Entity와 DTO의 분리 이유 이해
-- [ ] 서비스 계층에서 `@Transactional` 역할 이해
-- [ ] HTTP 상태 코드 (200, 201, 204, 400, 404) 이해
-
 ---
 
-### Phase 2: Backend 확장 (2주차)
+### Phase 2: Backend 확장
 
 **목표: Post CRUD 구현 및 전역 예외 처리 + CORS 설정**
 
@@ -761,12 +752,11 @@ public class UserController { ... }
 ```
 
 **3. 배포 시:**
-- 같은 도메인 사용: `example.com` (Frontend) + `api.example.com` (Backend)
-- Nginx로 프록시 설정
+- 위의 `WebConfig.java` 설정에서 "https://mini-postman-nine.vercel.app" // Vercel 배포용 (추가!)
 
 ---
 
-### Phase 3: History API (3주차)
+### Phase 3: History API
 
 **목표: Request History 저장 및 조회 기능 구현**
 
@@ -840,7 +830,7 @@ public class History {
 
 ---
 
-### Phase 4: Frontend 기초 (4주차)
+### Phase 4: Frontend 기초
 
 **목표: Next.js 프로젝트 생성 및 기본 UI 구현**
 
@@ -979,7 +969,7 @@ export default function Home() {
 
 ---
 
-### Phase 5: Frontend 고도화 (5주차)
+### Phase 5: Frontend 고도화
 
 **목표: History 기능 및 UI 개선**
 
@@ -1012,7 +1002,7 @@ export async function getHistories() {
 
 ---
 
-### Phase 6: 통합 및 배포 (6주차)
+### Phase 6: 통합 및 배포
 
 **목표: Docker 설정 및 실제 배포**
 
@@ -1062,11 +1052,10 @@ services:
 
 #### 6.3 배포 옵션
 
-| 서비스 | 용도 | 가격 | 특징 |
-|--------|------|------|------|
-| Vercel | Frontend | 무료 | Next.js 최적화 |
-| Railway | Backend | 무료~$5 | 간편한 배포 |
-| Render | Backend | 무료 | 자동 배포 |
+| 서비스   | 용도      | 가격  | 특징          |
+|--------|----------|------|--------------|
+| Vercel | Frontend | 무료  | Next.js 최적화 |
+| Render | Backend  | 무료  | 자동 배포       |
 
 ---
 
@@ -1227,12 +1216,12 @@ Database
 
 **각 계층의 역할:**
 
-| 계층 | 어노테이션 | 역할 |
-|------|-----------|------|
+| 계층        | 어노테이션          | 역할          |
+|------------|------------------|--------------|
 | Controller | `@RestController` | HTTP 요청/응답 |
-| Service | `@Service` | 비즈니스 로직 |
-| Repository | `@Repository` | 데이터 접근 |
-| Domain | `@Entity` | DB 테이블 매핑 |
+| Service    | `@Service`       | 비즈니스 로직    |
+| Repository | `@Repository`    | 데이터 접근     |
+| Domain     | `@Entity`        | DB 테이블 매핑  |
 
 ### 8.2 REST API 원칙
 
@@ -1360,6 +1349,7 @@ Access to fetch blocked by CORS policy
 
 ```
 Getter/Setter가 인식되지 않음
+Setter는 쓰지 않고 배서드나 생성자로 해결
 ```
 
 **해결:** Lombok 재설치 및 Eclipse 재시작
@@ -1398,9 +1388,9 @@ Password: (비워두기)
 
 ---
 
-## 11. 추가 학습 (선택사항)
+## 11. 추가 학습
 
-### MyBatis 추가 (Phase 7, 2주)
+### MyBatis 추가
 
 프로젝트 완성 후 MyBatis 추가:
 
@@ -1461,5 +1451,3 @@ public interface UserMapper {
 본 프로젝트는 학습 목적으로 자유롭게 사용 가능합니다.
 
 ---
-
-**Made for learning Spring Boot & REST API**
